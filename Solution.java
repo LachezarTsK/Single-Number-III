@@ -3,34 +3,20 @@ public class Solution {
 
     public int[] singleNumber(int[] nums) {
 
-        int size = nums.length;
-        int xor = 0;
-        for (int i = 0; i < size; i++) {
-            xor ^= nums[i];
+        int bitmask = 0;
+        for (int n : nums) {
+            bitmask ^= n;
         }
 
-        //the righmost different bit of the two single numbers that are being searched.
-        int rightMostDifferentBit = 0;
-        while (rightMostDifferentBit < 31) {
-            if ((xor & 1) == 1) {
-                break;
-            }
-            xor >>= 1;
-            rightMostDifferentBit++;
-        }
+        int firstDifferentRightmostBit_for_theSearchedSingles = bitmask & (-bitmask);
+        int firstSingle = 0;
 
-        int firstSingleNumber = 0;
-        int secondSingleNumber = 0;
-
-        for (int i = 0; i < size; i++) {
-            int current = nums[i] >> rightMostDifferentBit;
-            if ((current & 1) == 1) {
-                firstSingleNumber ^= nums[i];
-            } else {
-                secondSingleNumber ^= nums[i];
+        for (int n : nums) {
+            if ((firstDifferentRightmostBit_for_theSearchedSingles & n) != 0) {
+                firstSingle ^= n;
             }
         }
 
-        return new int[]{firstSingleNumber, secondSingleNumber};
+        return new int[]{firstSingle, (firstSingle ^ bitmask)};
     }
 }
