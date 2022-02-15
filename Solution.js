@@ -4,33 +4,20 @@
  * @return {number[]}
  */
 var singleNumber = function (nums) {
-    let size = nums.length;
-    let xor = 0;
-    for (let i = 0; i < size; i++) {
-        xor ^= nums[i];
+
+    let bitmask = 0;
+    for (let n of nums) {
+        bitmask ^= n;
     }
 
-    //the righmost different bit of the two single numbers that are being searched.
-    let rightMostDifferentBit = 0;
-    while (rightMostDifferentBit < 31) {
-        if ((xor & 1) === 1) {
-            break;
-        }
-        xor >>= 1;
-        rightMostDifferentBit++;
-    }
+    let firstDifferentRightmostBit_for_theSearchedSingles = bitmask & (-bitmask);
+    let firstSingle = 0;
 
-    let firstSingleNumber = 0;
-    let secondSingleNumber = 0;
-
-    for (let i = 0; i < size; i++) {
-        let current = nums[i] >> rightMostDifferentBit;
-        if ((current & 1) === 1) {
-            firstSingleNumber ^= nums[i];
-        } else {
-            secondSingleNumber ^= nums[i];
+    for (let n of nums) {
+        if ((firstDifferentRightmostBit_for_theSearchedSingles & n) !== 0) {
+            firstSingle ^= n;
         }
     }
 
-    return [firstSingleNumber, secondSingleNumber];
+    return [firstSingle, (firstSingle ^ bitmask)];
 };
